@@ -43,24 +43,24 @@ class HashTable:
         # Note that, the node does not have to be linked to the tail of that list.
         # Remind that, if the key is new, you also need to append the key to self.keys.
         # If key is not new, update the old corresponding value to the new one.
+
         index = hash(key) % len(self.table)
-        # don't know what to make the next parameter equal too?
         newNode = HashTable.Node(key, value)
         foundIt = False
         if self.table[index] is not None:
-            # how do u find the node that contains the specific key with that certain value
-            currentNode = HashTable.Node(key, self.table[index])
-            if currentNode.key is key:
-                currentNode.value = value
-            else:
-                while currentNode.next is not None:
-                    currentNode = currentNode.next
-                    if currentNode.key is key:
-                        currentNode.value = value
-                        foundIt = True
-                        break
-                if foundIt is False:
+            currentNode = self.table[index]
+            while currentNode.next is not None:
+                if currentNode.key is key:
+                    currentNode.value = value
+                    foundIt = True
+                    break
+                currentNode = currentNode.next
+            if foundIt is False:
+                if currentNode.key is key:
+                    currentNode.value = value
+                else:
                     currentNode.next = newNode
+                    self.keys.append(key)
         else:
             self.table[index] = newNode
             self.keys.append(key)
@@ -70,11 +70,18 @@ class HashTable:
         # You may assume that the key is in the HashTable.
         # Return the corresponding value of the input key.
         # It can only appear in self.table with index = hash(key) % len(self.table).
-
         # You may also consider a design where the input key might not be in the HashTable.
         # If key is in the HashTable, return the corresponding value of the input key.
         # if key is not in the HashTable, raise KeyError(key).
-        pass
+
+        index = hash(key) % len(self.table)
+        currentNode = self.table[index]
+        while currentNode is not None and currentNode.key != key:
+            currentNode = currentNode.next
+        if currentNode is None:
+            return KeyError(key)
+        else:
+            return currentNode.value
 
     def __contains__(self, key):
         # This method implements "key in HashTable"
@@ -92,11 +99,12 @@ class HashTable:
     def __iter__(self):
         # This method implements "for key in HashTable"
         # Yield each key in self.keys
-        pass
+        for i in self.keys:
+            yield i
 
     def __repr__(self):
         # This method implements "print(HashTable)"
-
+        
         ####################    DO NOT CHANGE THIS  ####################
         return "{" + ', '.join(repr(key) + ':' + repr(self[key]) for key in self) + "}"
 
