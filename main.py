@@ -84,17 +84,15 @@ class HashTable:
             return currentNode.value
 
     def __contains__(self, key):
-        # This method implements "key in HashTable"
-        # Return a boolean that represents whether key is in the HashTable.
-        # Note that, DO NOT "return key in self.keys", because it needs O(k) time (if there are k keys).
-        # This operation is expected to have a constant running time.
-
-        # idk if this is fast enough
-        result = self.keys.count(key)
-        if result > 0:
-            return True
-        else:
-            return False
+        index = hash(key) % len(self.table)
+        foundIt = False
+        currentNode = self.table[index]
+        while currentNode is not None:
+          if currentNode.key == key:
+            foundIt = True
+            break
+          currentNode = currentNode.next
+        return foundIt
 
     def __iter__(self):
         # This method implements "for key in HashTable"
